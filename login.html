@@ -301,46 +301,47 @@
         <!-- page-title end -->
 
 
-        <!-- sign-section -->
-        <section class="sign-section pt_110 pb_120">
-            <div class="pattern-layer" style="background-image: url(assets/images/shape/shape-25.png);"></div>
-            <div class="auto-container">
-                <div class="form-inner">
-                    <form method="post" action="login.html">
-                        <div class="form-group">
-                            <label>Email <span>*</span></label>
-                            <input type="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Password <span>*</span></label>
-                            <input type="password" name="password" required>
-                        </div>
-                        <div class="form-group message-btn">
-                            <button type="submit" class="theme-btn btn-one">Log In</button>
-                        </div>
-                        <span class="text">or</span>
-                        <ul class="social-links clearfix">
-                            <li>
-                                <a href="login.html"><img src="assets/images/icons/icon-25.png" alt="">Continue with Google</a>
-                            </li>
-                            <li>
-                                <a href="login.html"><img src="assets/images/icons/icon-26.png" alt="">Continue with Facebook</a>
-                            </li>
-                        </ul>
-                    </form>
-                    <div class="other-option">
-                        <div class="check-box">
-                            <input class="check" type="checkbox" id="checkbox1">
-                            <label for="checkbox1">Remember me</label>
-                        </div>
-                        <button class="forgot-password">Forget password?</button>
-                    </div>
-                    <div class="lower-text centred"><p>Not registered yet? <a href="signup.html">Create an Account</a></p></div>
+       <!-- sign-section -->
+<section class="sign-section pt_110 pb_120">
+    <div class="pattern-layer" style="background-image: url(assets/images/shape/shape-25.png);"></div>
+    <div class="auto-container">
+        <div class="form-inner">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="emailInput">Email <span>*</span></label>
+                    <input type="email" id="emailInput" name="email" required>
                 </div>
+                <div class="form-group">
+                    <label for="passwordInput">Password <span>*</span></label>
+                    <input type="password" id="passwordInput" name="password" required>
+                </div>
+                <div class="form-group message-btn">
+                    <button type="submit" id="loginBtn" class="theme-btn btn-one">Log In</button>
+                </div>
+                <span class="text">or</span>
+                <ul class="social-links clearfix">
+                    <li>
+                        <a href="login.html"><img src="assets/images/icons/icon-25.png" alt="">Continue with Google</a>
+                    </li>
+                    <li>
+                        <a href="login.html"><img src="assets/images/icons/icon-26.png" alt="">Continue with Facebook</a>
+                    </li>
+                </ul>
+            </form>
+            <div class="other-option">
+                <div class="check-box">
+                    <input class="check" type="checkbox" id="rememberMe">
+                    <label for="rememberMe">Remember me</label>
+                </div>
+                <button class="forgot-password" id="forgotPassword">Forget password?</button>
             </div>
-        </section>
-        <!-- sign-section end -->
-
+            <div class="lower-text centred">
+                <p>Not registered yet? <a href="signup.html">Create an Account</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- sign-section end -->
 
         <!-- subscribe-style-two -->
         <section class="subscribe-style-two">
@@ -511,6 +512,40 @@
 
     <!-- main-js -->
     <script src="assets/js/script.js"></script>
+    <script>
+    // AJAX login
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        e.preventDefault(); // prevent page reload
+
+        const email = document.getElementById("emailInput").value.trim();
+        const password = document.getElementById("passwordInput").value.trim();
+
+        try {
+            const response = await fetch("http://localhost:3001/api/v1/users/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Store token if needed
+                localStorage.setItem("token", data.token);
+                alert("Login successful! Role: " + data.role);
+                // Redirect to dashboard or another page
+                window.location.href = "/index.html";
+            } else {
+                alert("Login failed! Please check your credentials.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Something went wrong. Please try again.");
+        }
+    });
+</script>
 
 </body><!-- End of .page_wrapper -->
 </html>
